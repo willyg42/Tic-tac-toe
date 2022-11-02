@@ -42,11 +42,7 @@ function takeTurn(e) {
     if (board[row][col] == -1) {
         board[row][col] = turn
         drawMark(col * 200, row * 200)
-        x = checkWin(row, col)
-        if (checkWin(row, col)) {
-            drawResult(`${turn} Wins!`)
-            canvas.removeEventListener('click', takeTurn)
-        }
+        checkWin(row, col)
         turn = (turn == 'X' ? 'O' : 'X')
     }
 }
@@ -55,31 +51,44 @@ function mod(n, m) {
     return ((n % m) + m) % m
 }
 
-function drawResult(result) {
+function drawFinish(result, row, col, direction) {
     ctx.font = '48px serif'
     ctx.fillText(result, 210, 650)
+    canvas.removeEventListener('click', takeTurn)
+    ctx.lineWidth = 15
+    if (direction == 'Vertical') {
+        drawLine([col * 200 + 100, 0], [col * 200 + 100, 600])
+    }
+    else if (direction == 'Horizontal') {
+        drawLine([0, row * 200 + 100], [600, row * 200 + 100])
+    }
+    else if (direction == 'Left Diagonal') {
+        drawLine([0, 0], [600, 600])
+    }
+    else if (direction == 'Right Diagonal') {
+        drawLine([600, 0], [0, 600])
+    }
 }
 
 function checkWin(row, col) {
     //check Vertical
     if (board[mod(row - 1, 3)][col] == turn && board[mod(row + 1, 3)][col] == turn) {
-        return true
+        drawFinish(`${turn} Wins!`, row, col, 'Vertical')
     }
     //check Horizontal
     if (board[row][mod(col - 1, 3)] == turn && board[row][mod(col + 1, 3)] == turn) {
-        return true
+        drawFinish(`${turn} Wins!`, row, col, 'Horizontal')
     }
     //check Top Left Diagonals
     if (row == col) {
         if (board[mod(row - 1, 3)][mod(col - 1, 3)] == turn && board[mod(row + 1, 3)][mod(col + 1, 3)] == turn) {
-            return true
+            drawFinish(`${turn} Wins!`, row, col, 'Left Diagonal')
         }
     }
     //check Top Right Diagonals
     if (row + col == 2) {
         if (board[mod(row - 1, 3)][mod(col + 1, 3)] == turn && board[mod(row + 1, 3)][mod(col - 1, 3)] == turn) {
-            return true
+            drawFinish(`${turn} Wins!`, row, col, 'Right Diagonal')
         }
     }
-    return false
 }
