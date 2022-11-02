@@ -79,13 +79,13 @@ function checkWin(row, col) {
     if (board[row][mod(col - 1, 3)] == turn && board[row][mod(col + 1, 3)] == turn) {
         drawFinish(`${turn} Wins!`, row, col, 'Horizontal')
     }
-    //check Top Left Diagonals
+    //check Top Left Diagonal
     if (row == col) {
         if (board[mod(row - 1, 3)][mod(col - 1, 3)] == turn && board[mod(row + 1, 3)][mod(col + 1, 3)] == turn) {
             drawFinish(`${turn} Wins!`, row, col, 'Left Diagonal')
         }
     }
-    //check Top Right Diagonals
+    //check Top Right Diagonal
     if (row + col == 2) {
         if (board[mod(row - 1, 3)][mod(col + 1, 3)] == turn && board[mod(row + 1, 3)][mod(col - 1, 3)] == turn) {
             drawFinish(`${turn} Wins!`, row, col, 'Right Diagonal')
