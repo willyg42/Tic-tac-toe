@@ -42,7 +42,11 @@ function takeTurn(e) {
     if (board[row][col] == -1) {
         board[row][col] = turn
         drawMark(col * 200, row * 200)
-        checkWin(row, col)
+        x = checkWin(row, col)
+        if (checkWin(row, col)) {
+            drawResult(`${turn} Wins!`)
+            canvas.removeEventListener('click', takeTurn)
+        }
         turn = (turn == 'X' ? 'O' : 'X')
     }
 }
@@ -51,14 +55,31 @@ function mod(n, m) {
     return ((n % m) + m) % m
 }
 
+function drawResult(result) {
+    ctx.font = '48px serif'
+    ctx.fillText(result, 210, 650)
+}
+
 function checkWin(row, col) {
     //check Vertical
     if (board[mod(row - 1, 3)][col] == turn && board[mod(row + 1, 3)][col] == turn) {
-        console.log('Win!')
+        return true
     }
     //check Horizontal
     if (board[row][mod(col - 1, 3)] == turn && board[row][mod(col + 1, 3)] == turn) {
-        console.log('Win!')
+        return true
     }
-    //check Diagonals
+    //check Top Left Diagonals
+    if (row == col) {
+        if (board[mod(row - 1, 3)][mod(col - 1, 3)] == turn && board[mod(row + 1, 3)][mod(col + 1, 3)] == turn) {
+            return true
+        }
+    }
+    //check Top Right Diagonals
+    if (row + col == 2) {
+        if (board[mod(row - 1, 3)][mod(col + 1, 3)] == turn && board[mod(row + 1, 3)][mod(col - 1, 3)] == turn) {
+            return true
+        }
+    }
+    return false
 }
