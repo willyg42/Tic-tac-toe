@@ -1,7 +1,7 @@
 const canvas = document.getElementById('gameCanvas')
 const ctx = canvas.getContext('2d')
 canvas.addEventListener('click', takeTurn)
-turn = 0
+turn = 'X'
 drawBoard()
 let board = [
     [-1, -1, -1],
@@ -9,8 +9,8 @@ let board = [
     [-1, -1, -1]
 ]
 
-function drawLine(ctx, beginPoint, endPoint) {
-    ctx.beginPath
+function drawLine(beginPoint, endPoint) {
+    ctx.beginPath()
     ctx.moveTo(...beginPoint)
     ctx.lineTo(...endPoint)
     ctx.stroke()
@@ -18,22 +18,47 @@ function drawLine(ctx, beginPoint, endPoint) {
 
 function drawBoard() {
     ctx.lineWidth = 3
-    drawLine(ctx, [200, 0], [200, 600])
-    drawLine(ctx, [400, 0], [400, 600])
-    drawLine(ctx, [0, 200], [600, 200])
-    drawLine(ctx, [0, 400], [600, 400])
+    drawLine([200, 0], [200, 600])
+    drawLine([400, 0], [400, 600])
+    drawLine([0, 200], [600, 200])
+    drawLine([0, 400], [600, 400])
 }
 
-function markSpace() {
-    ctx.font = '100pt serif' 
-    mark = (turn ? 'O' : 'X')
-    ctx.fillText(mark, 50, 125)
+function drawMark(x, y) {
+    ctx.lineWidth = 10
+    if (turn == 'X') {
+        drawLine([x + 30, y + 30], [x + 170, y + 170])
+        drawLine([x + 170, y + 30], [x + 30, y + 170])
+    } else {
+        ctx.beginPath()
+        ctx.arc(x + 100, y + 100, 75, 2 * Math.PI, false)
+        ctx.stroke() 
+    }
 }
 
 function takeTurn(e) {
     row = Math.floor(e.y / 200)
     col = Math.floor(e.x / 200)
     if (board[row][col] == -1) {
-        markSpace() 
+        board[row][col] = turn
+        drawMark(col * 200, row * 200)
+        checkWin(row, col)
+        turn = (turn == 'X' ? 'O' : 'X')
     }
+}
+
+function mod(n, m) {
+    return ((n % m) + m) % m
+}
+
+function checkWin(row, col) {
+    //check Vertical
+    if (board[mod(row - 1, 3)][col] == turn && board[mod(row + 1, 3)][col] == turn) {
+        console.log('Win!')
+    }
+    //check Horizontal
+    if (board[row][mod(col - 1, 3)] == turn && board[row][mod(col + 1, 3)] == turn) {
+        console.log('Win!')
+    }
+    //check Diagonals
 }
